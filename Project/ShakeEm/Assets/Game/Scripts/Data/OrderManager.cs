@@ -28,59 +28,61 @@ public class OrderManager : MonoBehaviour
 	#endregion
 	#region Instance Fields and Properties
 	//Only use this for inspector setup
-	[SerializeField] private AOrder[] arrOrders;
-
-	private Dictionary<OrderClassification, List<AOrder>> orderDictionary;
+	[SerializeField] private Recipe[] recipeArray;
 	#endregion
 
 	#region Setup
 	private void AwakeOrderManager()
 	{
-		orderDictionary = new Dictionary<OrderClassification, List<AOrder>>();
 
-		for(int o = 0; o < arrOrders.Length; o++)
-		{
-			AOrder order = arrOrders[o];
-			if(!orderDictionary.ContainsKey(order.OrderType))
-			{
-				orderDictionary.Add(order.OrderType, new List<AOrder>());
-			}
-
-			orderDictionary[order.OrderType].Add(order);
-		}
-
-		arrOrders = null;
 	}
 
 	private void DestroyOrderManager()
 	{
-		foreach(KeyValuePair<OrderClassification, List<AOrder>> pair in orderDictionary)
-		{
-			pair.Value.Clear();
-		}
-
-		orderDictionary.Clear();
-		orderDictionary = null;
+		recipeArray = null;
 	}
 	#endregion
 
 	#region Order Manager methods
-	public AOrder GetOrder(OrderClassification orderType)
+	public Recipe GetOrder()
 	{
-		if(!orderDictionary.ContainsKey(orderType))
+		if(recipeArray == null)
 		{
-			throw new System.Exception(ErrorMessages.ERR_INVALID_ORDER_TYPE);
+			throw new System.Exception("We don't have any recipe");
 		}
 
-		List<AOrder> newOrder = orderDictionary[orderType];
+		int index = Random.Range(0, recipeArray.Length);
 
-		if(newOrder.Count == 0)
+		Recipe recipe = recipeArray[index];
+
+		for(int s = 0; s < recipe.IngredientsNeeded; s++)
 		{
-			throw new System.Exception(ErrorMessages.ERR_ORDER_TYPE_EMPTY);
+			string id = recipe.GetIngredient(s);
+			Ingredient ing = IngredientPool.Instance.Borrow();
+			ing.transform.SetParent(transform);
+			ing.transform.localScale = Vector3.one;
+			ing.SetIngredient(id, false);
+
+			Ingredient append = IngredientPool.Instance.Borrow();
+			append.transform.SetParent(transform);
+			append.transform.localScale = Vector3.one;
+
+			if(s < recipe.IngredientsNeeded - 1)
+			{
+				append.SetIngredient("plus", false);
+			}
+			else
+			{
+				append.SetIngredient("equal", false);
+			}
 		}
 
-		int index = Random.Range(0, newOrder.Count);
-		return newOrder[index];
+		Ingredient product = IngredientPool.Instance.Borrow();
+		product.transform.SetParent(transform);
+		product.transform.localScale = Vector3.one;
+		product.SetIngredient(recipe.RecipeId, false);
+
+		return recipe;
 	}
 	#endregion
 }
