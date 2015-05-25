@@ -1,9 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class MainGameplay : MonoBehaviour 
 {
-	[SerializeField] bool isSinglePlayer = true;
+	private static bool isSinglePlayer = true;
+	public static bool IsSinglePlayer
+	{
+		get
+		{
+			return isSinglePlayer;
+		}
+	}
+
 	void Start()
 	{
 		CreateOrder();
@@ -12,15 +20,6 @@ public class MainGameplay : MonoBehaviour
 	public void CreateOrder()
 	{
 		CustomerHandler.Instance.GenerateRandomCustomer();
-		IngredientHandler.Instance.SetCurrentRecipt(OrderManager.Instance.GetOrder());
-
-		if(isSinglePlayer)
-		{
-			IngredientHandler.Instance.GenerateIngredientsTable();
-		}
-		else
-		{
-			IngredientHandler.Instance.SpreadIngredientsToPlayers();
-		}
+		OrderManager.Instance.GenerateOrder();
 	}
 }
