@@ -8,6 +8,13 @@ public class Ingredient : MonoBehaviour
 	[SerializeField] private Image ingredientIcon;
 	[SerializeField] private Button button;
 
+	public void SetImageFocus(float alpha)
+	{
+		Color c = ingredientIcon.color;
+		c.a = alpha;
+		ingredientIcon.color = c;
+	}
+
 	//Allow ingredient to change its id which will reflect in its display icon
 	public void SetIngredient(string id, bool asButton = true)
 	{
@@ -18,6 +25,6 @@ public class Ingredient : MonoBehaviour
 
 	public void OnIngredientTapped()
 	{
-		//TODO: Call order handler and pass this ingredient's id
+		OrderManager.Instance.AddIngredient(ingredientId);
 	}
 }
