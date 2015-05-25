@@ -31,7 +31,7 @@ public class IngredientHandler : MonoBehaviour
 	[SerializeField] private string[] ingredientIds;
 	[SerializeField] private int maxIngredientsInTable;
 
-	private Recipe currentRecipe;
+	private Ingredient[] ingredientsInBoard;
 	#endregion
 
 	#region IngredientHandler methods
@@ -45,22 +45,67 @@ public class IngredientHandler : MonoBehaviour
 
 	}
 
-	public void SetCurrentRecipt(Recipe recipe)
+	public void GenerateIngredients()
 	{
-		this.currentRecipe = recipe;
+		if(MainGameplay.IsSinglePlayer)
+		{
+			GenerateIngredientsTable();
+		}
+		else
+		{
+			SpreadIngredientsToPlayers();
+		}
 	}
 
 	public void GenerateIngredientsTable()
 	{
-		for(int i = 0; i < maxIngredientsInTable; i++)
+		if(ingredientsInBoard != null)
+		{
+			foreach(Ingredient iib in ingredientsInBoard)
+			{
+				IngredientPool.Instance.ReturnBorrowed(iib);
+				iib.gameObject.SetActive(false);
+			}
+		}
+
+		string[] ingInBoard = new string[maxIngredientsInTable];
+		ingredientsInBoard  = new Ingredient[maxIngredientsInTable];
+		ingInBoard[0] = OrderManager.Instance.CurrentIngredient;
+
+		for(int i = 1; i < maxIngredientsInTable; i++)
 		{
 			string id = GetRandomIngredientSinglePlayer();
-			Ingredient ing = IngredientPool.Instance.Borrow();
+			ingInBoard[i] = id;
+		}
 
+		ingInBoard = ShuffleIngredients(ingInBoard);
+
+		for(int s = 0; s < ingInBoard.Length; s++)
+		{
+			string ingId = ingInBoard[s];
+			
+			Ingredient ing = IngredientPool.Instance.Borrow();
+			
 			ing.transform.SetParent(transform);
 			ing.transform.localScale = Vector3.one;
-			ing.SetIngredient(id);
+			ing.SetIngredient(ingId);
+			ing.gameObject.SetActive(true);
+
+			ingredientsInBoard[s] = ing;
 		}
+	}
+
+	private string[] ShuffleIngredients(string[] inBoard)
+	{
+		for (int i = inBoard.Length; i > 0; i--)
+		{
+			int j = Random.Range(0, i);
+			string k = inBoard[j];
+			inBoard[j] = inBoard[i - 1];
+			inBoard[i - 1]  = k;
+		}
+
+		return inBoard;
 	}
 
 	public void SpreadIngredientsToPlayers()
@@ -70,11 +115,6 @@ public class IngredientHandler : MonoBehaviour
 
 	public string GetRandomIngredientSinglePlayer()
 	{
-		if(this.currentRecipe == null)
-		{
-			throw new System.Exception("We don't have a recipe yet");
-		}
-
 		//Make sure that the inredient is still part of the recipe
 		string id = "";
 		bool foundAnIngredient = false;
@@ -94,7 +134,7 @@ public class IngredientHandler : MonoBehaviour
 			}
 
 			id = ingredientIds[index];
-			foundAnIngredient = this.currentRecipe.IsPartOfRecipe(id);
+			foundAnIngredient = OrderManager.Instance.CurrentRecipe.IsPartOfRecipe(id);
 		}
 
 		return id;
