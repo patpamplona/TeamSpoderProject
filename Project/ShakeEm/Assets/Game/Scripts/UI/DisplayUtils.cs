@@ -11,4 +11,29 @@ public class DisplayUtils
 			child.gameObject.layer = layer;
 		}
 	}
+
+	public static string ConvertToThousands(int val)
+	{
+		string str = val.ToString();
+
+		int counter = 0;
+		int index = str.Length - 1;
+
+		while(index >= 0)
+		{
+			counter++;
+
+			if(counter == 3 && index > 0)
+			{
+				counter = 0;
+				str = str.Insert(index, ",");
+			}
+			else
+			{
+				index--;
+			}
+		}
+
+		return str;
+	}
 }
