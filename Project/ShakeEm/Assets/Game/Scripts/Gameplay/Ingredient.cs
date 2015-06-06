@@ -8,6 +8,14 @@ public class Ingredient : MonoBehaviour
 	[SerializeField] private Image ingredientIcon;
 	[SerializeField] private Button button;
 
+	public string IngredientID
+	{
+		get
+		{
+			return ingredientId;
+		}
+	}
+
 	public void SetImageFocus(float alpha)
 	{
 		Color c = ingredientIcon.color;

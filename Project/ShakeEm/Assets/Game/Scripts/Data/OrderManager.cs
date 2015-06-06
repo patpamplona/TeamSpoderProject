@@ -52,9 +52,7 @@ public class OrderManager : MonoBehaviour
 		}
 	}
 
-	private Ingredient[] ingredients;
-	private Ingredient[] connectors;
-	private Ingredient product;
+	[SerializeField] private AdjustableGrid recipeGrid;
 	#endregion
 
 	#region Setup
@@ -77,86 +75,26 @@ public class OrderManager : MonoBehaviour
 			throw new System.Exception("We don't have any recipe");
 		}
 
-		if(ingredients != null)
-		{
-			foreach(Ingredient ing in ingredients)
-			{
-				IngredientPool.Instance.ReturnBorrowed(ing);
-				ing.gameObject.SetActive(false);
-			}
-
-			ingredients = null;
-		}
-
-		if(connectors != null)
-		{
-			foreach(Ingredient conn in connectors)
-			{
-				IngredientPool.Instance.ReturnBorrowed(conn);
-				conn.gameObject.SetActive(false);
-			}
-			
-			connectors = null;
-		}
-
-		if(product != null)
-		{
-			IngredientPool.Instance.ReturnBorrowed(product);
-			product.gameObject.SetActive(false);
-			product = null;
-		}
-
 		int index = Random.Range(0, recipeArray.Length);
 
 		recipe = recipeArray[index];
-		ingredients = new Ingredient[recipe.IngredientsNeeded];
-		connectors  = new Ingredient[recipe.IngredientsNeeded];
 
-		for(int s = 0; s < recipe.IngredientsNeeded; s++)
+		List<string> ingredients = new List<string>();
+		for(int i = 0; i < recipe.IngredientsNeeded; i++)
 		{
-			string id = recipe.GetIngredient(s);
-			Ingredient ing = IngredientPool.Instance.Borrow();
-			ing.transform.SetParent(transform);
-			ing.transform.localScale = Vector3.one;
-			ing.SetIngredient(id, false);
-			ing.SetImageFocus(s == 0 ? 1.0f : 0.5f);
-			ing.gameObject.SetActive(true);
-
-			ingredients[s] = ing;
-
-			Ingredient append = IngredientPool.Instance.Borrow();
-			append.transform.SetParent(transform);
-			append.transform.localScale = Vector3.one;
-			append.SetImageFocus(1.0f);
-			append.gameObject.SetActive(true);
-
-			if(s < recipe.IngredientsNeeded - 1)
-			{
-				append.SetIngredient("plus", false);
-			}
-			else
-			{
-				append.SetIngredient("equal", false);
-			}
-
-			connectors[s] = append;
+			ingredients.Add(recipe.GetIngredient(i));
 		}
 
-		product = IngredientPool.Instance.Borrow();
-		product.transform.SetParent(transform);
-		product.transform.localScale = Vector3.one;
-		product.SetIngredient(recipe.RecipeId, false);
-		product.SetImageFocus(1.0f);
-		product.gameObject.SetActive(true);
-
+		recipeGrid.SetGrid(ingredients);
 		sequenceIndex = 0;
+
+		recipeGrid.FocusOnChild(sequenceIndex);
+
 		IngredientHandler.Instance.GenerateIngredients();
 	}
 
 	public void AddIngredient(string id)
 	{
-		ingredients[sequenceIndex].SetImageFocus(0.5f);
-
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
 		{
 			sequenceIndex++;
@@ -174,7 +112,7 @@ public class OrderManager : MonoBehaviour
 		else
 		{
 			IngredientHandler.Instance.GenerateIngredients();
-			ingredients[sequenceIndex].SetImageFocus(1.0f);
+			recipeGrid.FocusOnChild(sequenceIndex);
 		}
 	}
 	#endregion
