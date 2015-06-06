@@ -106,6 +106,8 @@ public class OrderManager : MonoBehaviour
 
 		if(sequenceIndex >= CurrentRecipe.IngredientsNeeded)
 		{
+			ScoreManager.Instance.AddScore(CustomerHandler.Instance.CurrentCustomer.Score);
+			CustomerHandler.Instance.CurrentCustomer.MarkAsServed();
 			CustomerHandler.Instance.GenerateRandomCustomer();
 			GenerateOrder();
 		}
