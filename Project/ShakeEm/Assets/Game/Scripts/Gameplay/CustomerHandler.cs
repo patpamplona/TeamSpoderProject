@@ -55,4 +55,12 @@ public class CustomerHandler : MonoBehaviour
 		currentCustomer.gameObject.SetActive(true);
 		currentCustomer.StartTimer();
 	}
+
+	public void Reset()
+	{
+		foreach(Customer customer in customers)
+		{
+			customer.MarkAsServed();
+		}
+	}
 }

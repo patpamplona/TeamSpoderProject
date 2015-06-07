@@ -78,4 +78,14 @@ public class AdjustableGrid : MonoBehaviour
 
 		rect.sizeDelta = _size;
 	}
+
+	public void Clear()
+	{
+		foreach(Image img in images)
+		{
+			Destroy (img);
+		}
+
+		images.Clear();
+	}
 }

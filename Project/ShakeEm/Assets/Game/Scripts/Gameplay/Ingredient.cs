@@ -33,6 +33,13 @@ public class Ingredient : MonoBehaviour
 
 	public void OnIngredientTapped()
 	{
-		OrderManager.Instance.AddIngredient(ingredientId);
+		if(NetworkManager.Instance.IsConnected)
+		{
+			OrderManager.Instance.SendIngredientToServer(ingredientId);
+		}
+		else
+		{
+			OrderManager.Instance.AddIngredient(ingredientId);
+		}
 	}
 }

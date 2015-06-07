@@ -93,6 +93,7 @@ public class OrderManager : MonoBehaviour
 		IngredientHandler.Instance.GenerateIngredients();
 	}
 
+	[RPC]
 	public void AddIngredient(string id)
 	{
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
@@ -116,6 +117,19 @@ public class OrderManager : MonoBehaviour
 			IngredientHandler.Instance.GenerateIngredients();
 			recipeGrid.FocusOnChild(sequenceIndex);
 		}
+	}
+
+	public void SendIngredientToServer(string id)
+	{
+		object[] parms = new object[] { id };
+
+		networkView.RPC("AddIngredient", RPCMode.Server, parms);
+	}
+
+	public void Reset()
+	{
+		recipe = null;
+		recipeGrid.Clear();
 	}
 	#endregion
 }

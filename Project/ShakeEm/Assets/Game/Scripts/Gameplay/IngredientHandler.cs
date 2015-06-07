@@ -54,13 +54,13 @@ public class IngredientHandler : MonoBehaviour
 
 	public void GenerateIngredients()
 	{
-		if(MainGameplay.IsSinglePlayer)
+		if(NetworkManager.Instance.IsConnected)
 		{
-			GenerateIngredientsTable();
+			SpreadIngredientsToPlayers();
 		}
 		else
 		{
-			SpreadIngredientsToPlayers();
+			GenerateIngredientsTable();
 		}
 	}
 
@@ -130,37 +130,12 @@ public class IngredientHandler : MonoBehaviour
 
 	public void SpreadIngredientsToPlayers()
 	{
-
+		GenerateIngredientsTable();
 	}
 
 	public string GetRandomIngredientSinglePlayer()
 	{
-		/*
-		//Make sure that the inredient is still part of the recipe
-		string id = "";
-		bool foundAnIngredient = false;
-		HashSet<int> invalid = new HashSet<int>();
-		while(!foundAnIngredient)
-		{
-			int index = -1;
-			do
-			{
-				index = Random.Range(0, ingredientIds.Length);
-			}
-			while(invalid.Contains(index) && invalid.Count < ingredientIds.Length);
-
-			if(invalid.Count == ingredientIds.Length)
-			{
-				throw new System.Exception("We don't have the ingredients of the given recipe");
-			}
-
-			id = ingredientIds[index];
-			foundAnIngredient = OrderManager.Instance.CurrentRecipe.IsPartOfRecipe(id);
-		}
-		*/
-
 		int index = Random.Range(0, ingredientIds.Length);
-
 		return ingredientIds[index];
 	}
 
@@ -168,6 +143,19 @@ public class IngredientHandler : MonoBehaviour
 	{
 		//Send only one valid ingredient per player
 		return "";
+	}
+
+	public void Reset()
+	{
+		if(ingredientsInBoard != null)
+		{
+			foreach(Ingredient ing in ingredientsInBoard)
+			{
+				IngredientPool.Instance.ReturnBorrowed(ing);
+			}
+
+			ingredientsInBoard = null;
+		}
 	}
 	#endregion
 }
