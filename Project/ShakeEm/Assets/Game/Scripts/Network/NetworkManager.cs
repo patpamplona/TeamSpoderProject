@@ -49,12 +49,29 @@ public class NetworkManager : MonoBehaviour
 		}
 	}
 
+	private HostData currentHost;
+
 	public bool IsConnectionMaxed
 	{
 		get
 		{
 			if(!isConnected) return false;
-			return Network.connections.Length == Network.maxConnections;
+			if(Network.isServer)
+			{
+				return Network.connections.Length == Network.maxConnections;
+			}
+
+			if(currentHost == null) return false;
+			return currentHost.connectedPlayers == currentHost.playerLimit - 1;
+		}
+	}
+
+	public bool IsServer
+	{
+		get
+		{
+			if(!isConnected) return true;
+			return Network.isServer;
 		}
 	}
 
@@ -64,6 +81,22 @@ public class NetworkManager : MonoBehaviour
 		{
 			isConnected = true;
 		}
+	}
+
+	public void EnableConnections()
+	{
+		SetConnectionUpdates(true);
+	}
+
+	public void DisableConnections()
+	{
+		SetConnectionUpdates(false);
+	}
+
+	private void SetConnectionUpdates(bool enable)
+	{
+		Network.isMessageQueueRunning = enable;
+		Network.SetSendingEnabled(0, enable);
 	}
 
 	private void OnServerInitialized()
@@ -102,6 +135,7 @@ public class NetworkManager : MonoBehaviour
 	{
 		if(isConnected) return;
 
+		currentHost = host;
 		Network.Connect(host);
 	}
 
@@ -110,6 +144,7 @@ public class NetworkManager : MonoBehaviour
 		if(Network.connections == null || Network.connections.Length == 0) return;
 
 		isConnected = false;
+		currentHost = null;
 		Network.Disconnect();
 		MasterServer.UnregisterHost();
 	}
@@ -123,6 +158,7 @@ public class NetworkManager : MonoBehaviour
 			Network.CloseConnection(Network.connections[0], true);
 		}
 
+		currentHost = null;
 		isConnected = false;
 	}
 
