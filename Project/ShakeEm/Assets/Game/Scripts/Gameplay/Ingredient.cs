@@ -33,13 +33,6 @@ public class Ingredient : MonoBehaviour
 
 	public void OnIngredientTapped()
 	{
-		if(NetworkManager.Instance.IsConnected)
-		{
-			OrderManager.Instance.SendIngredientToServer(ingredientId);
-		}
-		else
-		{
-			OrderManager.Instance.AddIngredient(ingredientId);
-		}
+		RPCHandler.Instance.CallRPCCheckIngredient(ingredientId);
 	}
 }

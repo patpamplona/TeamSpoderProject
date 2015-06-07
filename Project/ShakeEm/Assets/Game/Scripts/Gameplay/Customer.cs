@@ -38,7 +38,7 @@ public class Customer : MonoBehaviour
 		if(!isWaiting) return;
 
 		timer += Time.deltaTime;
-
+		
 		UpdateTimer();
 
 		if(timer >= patience)
@@ -46,10 +46,13 @@ public class Customer : MonoBehaviour
 			patienceTimer.fillAmount = 0.0f;
 			timer = 0.0f;
 			isWaiting = false;
-
-			ScoreManager.Instance.AddScore(scoreDeduction);
-			CustomerHandler.Instance.GenerateRandomCustomer();
-			OrderManager.Instance.GenerateOrder();
+			
+			if(NetworkManager.Instance.IsServer)
+			{
+				RPCHandler.Instance.CallRPCAddScore(scoreDeduction);
+				CustomerHandler.Instance.GenerateRandomCustomer();
+				OrderManager.Instance.GenerateOrder();
+			}
 		}
 	}
 

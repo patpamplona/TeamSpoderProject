@@ -30,6 +30,7 @@ public class OrderManager : MonoBehaviour
 	#region Instance Fields and Properties
 	//Only use this for inspector setup
 	[SerializeField] private Recipe[] recipeArray;
+	[SerializeField] private NetworkView orderNetwork;
 
 	private int sequenceIndex = 0;
 
@@ -75,26 +76,36 @@ public class OrderManager : MonoBehaviour
 			throw new System.Exception("We don't have any recipe");
 		}
 
-		int index = Random.Range(0, recipeArray.Length);
+		if(NetworkManager.Instance.IsServer)
+		{
+			int index = Random.Range(0, recipeArray.Length);
+			RPCHandler.Instance.CallRPCGenerateOrder(index);
+		}
+	}
 
+	public void SetRecipe(int index)
+	{
 		recipe = recipeArray[index];
+		UpdateOrder();
+	}
 
+	private void UpdateOrder()
+	{
 		List<string> ingredients = new List<string>();
 		for(int i = 0; i < recipe.IngredientsNeeded; i++)
 		{
 			ingredients.Add(recipe.GetIngredient(i));
 		}
-
+		
 		recipeGrid.SetGrid(ingredients);
 		sequenceIndex = 0;
 
 		recipeGrid.FocusOnChild(sequenceIndex);
-
+		
 		IngredientHandler.Instance.GenerateIngredients();
 	}
 
-	[RPC]
-	public void AddIngredient(string id)
+	public void CheckIngredient(string id)
 	{
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
 		{
@@ -105,10 +116,18 @@ public class OrderManager : MonoBehaviour
 			sequenceIndex = 0;
 		}
 
+		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex);
+	}
+
+	public void ProgressRecipe(int sequence)
+	{
+		sequenceIndex = sequence;
+
 		if(sequenceIndex >= CurrentRecipe.IngredientsNeeded)
 		{
-			ScoreManager.Instance.AddScore(CustomerHandler.Instance.CurrentCustomer.Score);
-			CustomerHandler.Instance.CurrentCustomer.MarkAsServed();
+			sequenceIndex = 0;
+			RPCHandler.Instance.CallRPCAddScore(CustomerHandler.Instance.CurrentCustomer.Score);
+			RPCHandler.Instance.CallRPCCustomerIsServed();
 			CustomerHandler.Instance.GenerateRandomCustomer();
 			GenerateOrder();
 		}
@@ -117,13 +136,6 @@ public class OrderManager : MonoBehaviour
 			IngredientHandler.Instance.GenerateIngredients();
 			recipeGrid.FocusOnChild(sequenceIndex);
 		}
-	}
-
-	public void SendIngredientToServer(string id)
-	{
-		object[] parms = new object[] { id };
-
-		networkView.RPC("AddIngredient", RPCMode.Server, parms);
 	}
 
 	public void Reset()
