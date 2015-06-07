@@ -8,6 +8,26 @@ public class GameScene : BasicScene
 		CustomerHandler.Instance.Reset();
 		ScoreManager.Instance.Reset();
 
+		if(NetworkManager.Instance.IsConnected)
+		{
+			StartCoroutine(EnableConnections());
+		}
+		else
+		{
+			StartOrder();
+		}
+	}
+
+	private IEnumerator EnableConnections()
+	{
+		yield return new WaitForSeconds(1.0f);
+
+		NetworkManager.Instance.EnableConnections();
+		StartOrder();
+	}
+
+	private void StartOrder()
+	{
 		CustomerHandler.Instance.GenerateRandomCustomer();
 		OrderManager.Instance.GenerateOrder();
 	}

@@ -22,6 +22,7 @@ public class JoinServerScene : BasicScene
 		{
 			if(NetworkManager.Instance.IsConnectionMaxed)
 			{
+				NetworkManager.Instance.DisableConnections();
 				SceneManager.Instance.SwitchToScene(SceneKeys.GAME_SCENE);
 			}
 		}

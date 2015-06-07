@@ -23,6 +23,7 @@ public class CreateServerScene : BasicScene
 		{
 			if(NetworkManager.Instance.IsConnectionMaxed)
 			{
+				NetworkManager.Instance.DisableConnections();
 				SceneManager.Instance.SwitchToScene(SceneKeys.GAME_SCENE);
 			}
 		}
