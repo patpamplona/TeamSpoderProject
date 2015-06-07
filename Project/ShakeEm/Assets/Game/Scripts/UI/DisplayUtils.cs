@@ -28,10 +28,8 @@ public class DisplayUtils
 				counter = 0;
 				str = str.Insert(index, ",");
 			}
-			else
-			{
-				index--;
-			}
+
+			index--;
 		}
 
 		return str;
