@@ -4,10 +4,13 @@ using System.Collections;
 
 public class PanelNameStore : BasePanelLobby {
 
-	[SerializeField]
+	[SerializeField] 
 	private Button buttonStart = null;
-	private string storeName = "";
 
+	[SerializeField] 
+	private GameObject panelConnecting = null;
+
+	private string storeName = "";
 
 	public override void Start () {
 		//base.Start();
@@ -20,11 +23,24 @@ public class PanelNameStore : BasePanelLobby {
 		
 		storeName = "";
 		buttonStart.interactable = false;
+		panelConnecting.SetActive (false);
 	}
 
 	private void ChangeToNextScreen() {
 
 		// change to next screen
+	}
+
+	private void ShowConnectingPanel() {
+
+		buttonStart.interactable = false;
+		panelConnecting.SetActive (true);
+	}
+
+	private void HideConnectingPanel() {
+
+		buttonStart.interactable = true;
+		panelConnecting.SetActive (false);
 	}
 
 	#region UI Event Callbacks
@@ -52,6 +68,9 @@ public class PanelNameStore : BasePanelLobby {
 		
 		Debug.Log ("On Start Clicked!");
 		PlayerProfile.GetInstance().storeName = this.storeName;
+
+		ShowConnectingPanel();
+		CreateServer();
 	}
 
 	#endregion
@@ -78,7 +97,8 @@ public class PanelNameStore : BasePanelLobby {
 		
 			// change to next screen
 			Debug.Log("Master Server Registration Successful!");
-			//ChangeToNextScreen();
+			HideConnectingPanel();
+			ChangeToNextScreen();
 
 		} else if (masterServerEvent == MasterServerEvent.RegistrationFailedGameName
 			|| masterServerEvent == MasterServerEvent.RegistrationFailedGameType
