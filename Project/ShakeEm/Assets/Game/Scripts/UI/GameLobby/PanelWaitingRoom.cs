@@ -31,4 +31,17 @@ public class PanelWaitingRoom : BasePanelLobby {
 
 		Debug.Log("Start Game Clicked!");
 	}
+
+	public void OnBackClicked() {
+		
+		Debug.Log ("On Back Clicked!");
+
+		Network.Disconnect();
+
+		if (PlayerProfile.GetInstance ().playerType == PlayerType.PlayerClient) {
+			PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_AVAILABLE_STORE);
+		} else if (PlayerProfile.GetInstance ().playerType == PlayerType.PlayerHost) {
+			PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_NAME_STORE);
+		}
+	}
 }

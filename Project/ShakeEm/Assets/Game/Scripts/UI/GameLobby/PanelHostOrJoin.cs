@@ -21,4 +21,10 @@ public class PanelHostOrJoin : BasePanelLobby {
 		PlayerProfile.GetInstance().playerType = PlayerType.PlayerClient;
 		PanelController.GetInstance().ShowPanel(PanelType.PANEL_AVAILABLE_STORE);
 	}
+
+	public void OnBackClicked() {
+		
+		Debug.Log ("On Back Clicked!");
+		PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_INPUT_NAME);
+	}
 }

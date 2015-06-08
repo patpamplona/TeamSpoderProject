@@ -35,6 +35,12 @@ public class PanelAvailableStores : BasePanelLobby {
 		PanelController.GetInstance ().ShowPanel (PanelType.PANEL_WAITING_ROOM);
 	}
 
+	public void OnBackClicked() {
+		
+		Debug.Log ("On Back Clicked!");
+		PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_HOST_OR_JOIN);
+	}
+
 	private void PopulateAvailableHosts() {
 
 		ClearHostItemsList();

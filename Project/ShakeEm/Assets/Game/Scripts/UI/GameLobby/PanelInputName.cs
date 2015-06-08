@@ -45,4 +45,10 @@ public class PanelInputName : BasePanelLobby {
 		PlayerProfile.GetInstance ().playerName = this.playerName;
 		PanelController.GetInstance().ShowPanel(PanelType.PANEL_HOST_OR_JOIN);
 	}
+
+	public void OnBackClicked() {
+
+		Debug.Log ("On Back Clicked!");
+		PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_START_GAME);
+	}
 }
