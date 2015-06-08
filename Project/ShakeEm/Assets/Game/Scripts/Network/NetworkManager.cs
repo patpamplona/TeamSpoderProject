@@ -51,6 +51,7 @@ public class NetworkManager : MonoBehaviour
 
 	private HostData currentHost;
 
+	private int clientCount = 0;
 	public bool IsConnectionMaxed
 	{
 		get
@@ -62,7 +63,7 @@ public class NetworkManager : MonoBehaviour
 			}
 
 			if(currentHost == null) return false;
-			return currentHost.connectedPlayers == currentHost.playerLimit - 1;
+			return clientCount == currentHost.playerLimit - 1;
 		}
 	}
 
@@ -75,11 +76,33 @@ public class NetworkManager : MonoBehaviour
 		}
 	}
 
+	public void UpdateClientCount(int count)
+	{
+		if(Network.isClient)
+		{
+			clientCount = count;
+		}
+	}
+
 	private void OnConnectedToServer()
 	{
 		if(Network.isClient)
 		{
 			isConnected = true;
+		}
+		else
+		{
+			clientCount = Network.connections.Length;
+			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
+		}
+	}
+
+	private void OnPlayerConnected(NetworkPlayer player) 
+	{
+		if(Network.isServer)
+		{
+			clientCount = Network.connections.Length;
+			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
 		}
 	}
 
@@ -104,6 +127,8 @@ public class NetworkManager : MonoBehaviour
 		if(Network.isServer)
 		{
 			isConnected = true;
+			clientCount = Network.connections.Length;
+			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
 		}
 	}
 
@@ -113,6 +138,11 @@ public class NetworkManager : MonoBehaviour
 		{
 			isConnected = false;
 		}
+		else
+		{
+			clientCount = Network.connections.Length;
+			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
+		}
 	}
 
 	private void OnDisconnectedFromServer()
@@ -121,12 +151,15 @@ public class NetworkManager : MonoBehaviour
 		{
 			isConnected = false;
 		}
+
+		clientCount = 0;
 	}
 
 	public void CreateServer(string gameName, int conn)
 	{
 		if(isConnected) return;
 
+		clientCount = 0;
 		Network.InitializeServer(conn, PORT, true);
 		MasterServer.RegisterHost(UNIQUE_GAME_NAME, gameName);
 	}
@@ -143,8 +176,12 @@ public class NetworkManager : MonoBehaviour
 	{
 		if(Network.connections == null || Network.connections.Length == 0) return;
 
+		clientCount = 0;
+		RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
+
 		isConnected = false;
 		currentHost = null;
+
 		Network.Disconnect();
 		MasterServer.UnregisterHost();
 	}
@@ -157,6 +194,8 @@ public class NetworkManager : MonoBehaviour
 		{
 			Network.CloseConnection(Network.connections[0], true);
 		}
+
+		clientCount = 0;
 
 		currentHost = null;
 		isConnected = false;

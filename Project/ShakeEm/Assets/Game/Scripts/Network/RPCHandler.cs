@@ -22,6 +22,21 @@ public class RPCHandler : MonoBehaviour
 		_instance = null;
 	}
 
+	public void CallNetworkUpdateClientCount(int count)
+	{
+		if(NetworkManager.Instance.IsConnected && Network.isServer)
+		{
+			Debug.Log ("Count : " + count);
+			networkView.RPC("NetworkUpdateClientCount", RPCMode.Others, new object[]{ count });
+		}
+	}
+
+	[RPC]
+	public void NetworkUpdateClientCount(int count)
+	{
+		NetworkManager.Instance.UpdateClientCount(count);
+	}
+
 	public void CallRPCGenerateCustomer(int index)
 	{
 		if(NetworkManager.Instance.IsConnected && Network.isServer)
