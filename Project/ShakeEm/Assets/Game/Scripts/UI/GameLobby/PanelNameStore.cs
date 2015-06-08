@@ -13,8 +13,7 @@ public class PanelNameStore : BasePanelLobby {
 	private string storeName = "";
 
 	public override void Start () {
-		//base.Start();
-		this.OnShow ();
+		base.Start();
 	}
 
 	public override void OnShow ()

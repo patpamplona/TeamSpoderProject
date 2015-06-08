@@ -14,22 +14,20 @@ public class PanelAvailableStores : BasePanelLobby {
 	private List<HostItem> hostItemList;
 
 	public override void Start () {
-		//base.Start ();
 
+		base.Start ();
 		hostItemList = new List<HostItem>();
-
-		ShowQueryingServer();
-		this.StartCoroutine(this.RefreshHostsList());
 	}
 
-	public override void OnShow ()
-	{
+	public override void OnShow () {
+
 		base.OnShow ();
+		ShowQueryingServer();
 	}
 
 	public override void OnShowComplete() {
 
-		RefreshHostsList();
+		this.StartCoroutine(this.RefreshHostsList());
 	}
 
 	public void ChangeToNextScreen() {
@@ -73,7 +71,7 @@ public class PanelAvailableStores : BasePanelLobby {
 			HostItem item = hostItemList[maxCount - 1];
 			hostItemList.Remove(item);
 
-			Destroy(item);
+			Destroy(item.gameObject);
 		}
 
 		hostItemList.Clear();
@@ -108,13 +106,16 @@ public class PanelAvailableStores : BasePanelLobby {
 		}
 
 		if (hostsList != null && hostsList.Length > 0) {
-			ShowHostsList();
-			PopulateAvailableHosts();
+
+			Debug.Log ("Servers Available!");
 		} else {
 
 			// No servers found.
 			Debug.Log ("No Servers Found!");
 		}
+
+		ShowHostsList();
+		PopulateAvailableHosts();
 	}
 
 	#endregion

@@ -9,7 +9,7 @@ public class PanelInputName : BasePanelLobby {
 	private string playerName = "";
 	
 	public override void Start () {
-		//base.Start();
+		base.Start();
 	}
 
 	public override void OnShow ()
@@ -43,5 +43,6 @@ public class PanelInputName : BasePanelLobby {
 
 		Debug.Log ("On Ok Clicked!");
 		PlayerProfile.GetInstance ().playerName = this.playerName;
+		PanelController.GetInstance().ShowPanel(PanelType.PANEL_HOST_OR_JOIN);
 	}
 }

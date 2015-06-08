@@ -12,11 +12,13 @@ public class PanelHostOrJoin : BasePanelLobby {
 
 		Debug.Log ("On Host Clicked!");
 		PlayerProfile.GetInstance().playerType = PlayerType.PlayerHost;
+		PanelController.GetInstance().ShowPanel(PanelType.PANEL_NAME_STORE);
 	}
 
 	public void OnJoinClicked() {
 
 		Debug.Log ("On Join Clicked!");
 		PlayerProfile.GetInstance().playerType = PlayerType.PlayerClient;
+		PanelController.GetInstance().ShowPanel(PanelType.PANEL_AVAILABLE_STORE);
 	}
 }

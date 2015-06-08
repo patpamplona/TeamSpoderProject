@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Holoville.HOTween;
 
 public class BasePanelLobby : MonoBehaviour {
+
+	private float animDuration = 1.0f;
 
 	RectTransform rectTrans = null;
 
@@ -33,6 +36,82 @@ public class BasePanelLobby : MonoBehaviour {
 	public virtual void OnHideComplete() {
 
 		// override to capture event when animation completes.
+	}
+
+	public void AnimateEnter() {
+
+		this.OnShow();
+
+		rectTrans.localPosition = new Vector3 (0, GameConstants.SCREEN_HEIGHT * -1, 0);
+
+		Sequence seqEnter = new Sequence();
+		seqEnter.ApplyCallback(CallbackType.OnComplete, delegate() {
+			this.OnShowComplete(); 
+		});
+
+		TweenParms parms = new TweenParms();
+		parms.Ease(EaseType.EaseInOutCubic);
+		parms.Prop("localPosition", Vector3.zero);
+
+		seqEnter.Append(HOTween.To(rectTrans, animDuration, parms));
+		seqEnter.Play();
+	}
+
+	public void AnimateEnterBack() {
+
+		this.OnShow();
+		
+		rectTrans.localPosition = new Vector3 (0, GameConstants.SCREEN_HEIGHT, 0);
+		
+		Sequence seqEnter = new Sequence();
+		seqEnter.ApplyCallback(CallbackType.OnComplete, delegate() {
+			this.OnShowComplete(); 
+		});
+		
+		TweenParms parms = new TweenParms();
+		parms.Ease(EaseType.EaseInOutCubic);
+		parms.Prop("localPosition", Vector3.zero);
+		
+		seqEnter.Append(HOTween.To(rectTrans, animDuration, parms));
+		seqEnter.Play();
+	}
+
+	public void AnimateExit() {
+
+		this.OnHide();
+
+		rectTrans.localPosition = Vector3.zero;
+
+		Sequence seqExit = new Sequence();
+		seqExit.ApplyCallback(CallbackType.OnComplete, delegate() {
+			this.OnHideComplete(); 
+		});
+		
+		TweenParms parms = new TweenParms();
+		parms.Ease(EaseType.EaseInOutCubic);
+		parms.Prop("localPosition", new Vector3 (0, GameConstants.SCREEN_HEIGHT, 0));
+		
+		seqExit.Append(HOTween.To(rectTrans, animDuration, parms));
+		seqExit.Play();
+	}
+
+	public void AnimateExitBack() {
+
+		this.OnHide();
+		
+		rectTrans.localPosition = Vector3.zero;
+		
+		Sequence seqExit = new Sequence();
+		seqExit.ApplyCallback(CallbackType.OnComplete, delegate() {
+			this.OnHideComplete(); 
+		});
+		
+		TweenParms parms = new TweenParms();
+		parms.Ease(EaseType.EaseInOutCubic);
+		parms.Prop("localPosition", new Vector3 (0, GameConstants.SCREEN_HEIGHT * -1, 0));
+		
+		seqExit.Append(HOTween.To(rectTrans, animDuration, parms));
+		seqExit.Play();
 	}
 
 	public void ShowPanel() {
