@@ -60,6 +60,7 @@ public class Customer : MonoBehaviour
 	{
 		patienceTimer.fillAmount = 1.0f - (timer / patience);
 
+		/*
 		if(patienceTimer.fillAmount >= 0.75f)
 		{
 			patienceTimer.color = Color.blue;
@@ -76,5 +77,6 @@ public class Customer : MonoBehaviour
 		{
 			patienceTimer.color = Color.red;
 		}
+		*/
 	}
 }
