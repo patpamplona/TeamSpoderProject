@@ -116,14 +116,14 @@ public class OrderManager : MonoBehaviour
 			sequenceIndex = 0;
 		}
 
-		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex);
+		bool changeRecipe = sequenceIndex >= CurrentRecipe.IngredientsNeeded;
+
+		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex, changeRecipe);
 	}
 
-	public void ProgressRecipe(int sequence)
+	public void ProgressRecipe(int sequence, bool changeRecipe)
 	{
-		sequenceIndex = sequence;
-
-		if(sequenceIndex >= CurrentRecipe.IngredientsNeeded)
+		if(changeRecipe)
 		{
 			sequenceIndex = 0;
 			RPCHandler.Instance.CallRPCAddScore(CustomerHandler.Instance.CurrentCustomer.Score);
@@ -133,6 +133,7 @@ public class OrderManager : MonoBehaviour
 		}
 		else
 		{
+			sequenceIndex = sequence;
 			IngredientHandler.Instance.GenerateIngredients();
 			recipeGrid.FocusOnChild(sequenceIndex);
 		}
