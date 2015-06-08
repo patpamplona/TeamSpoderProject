@@ -52,6 +52,38 @@ public class NetworkManager : MonoBehaviour
 	private HostData currentHost;
 
 	private int clientCount = 0;
+	public int ClientCount
+	{
+		get
+		{
+			return clientCount;
+		}
+	}
+
+	private int playerIndex = 0;
+	public int PlayerIndex
+	{
+		get
+		{
+			return playerIndex;
+		}
+	}
+
+	public int MaxPlayers
+	{
+		get
+		{
+			if(!isConnected) return 0;
+			if(Network.isServer)
+			{
+				return Network.maxConnections;
+			}
+			
+			if(currentHost == null) return 0;
+			return currentHost.playerLimit - 1;
+		}
+	}
+
 	public bool IsConnectionMaxed
 	{
 		get
@@ -103,6 +135,19 @@ public class NetworkManager : MonoBehaviour
 		{
 			clientCount = Network.connections.Length;
 			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
+
+			int oldServerId = playerIndex;
+			RPCHandler.Instance.CallAssignPlayerId(oldServerId, player);
+
+			playerIndex++;
+		}
+	}
+
+	public void AssignNetworkId(int id)
+	{
+		if(Network.isClient)
+		{
+			playerIndex = id;
 		}
 	}
 
@@ -160,6 +205,7 @@ public class NetworkManager : MonoBehaviour
 		if(isConnected) return;
 
 		clientCount = 0;
+		playerIndex = 0;
 		Network.InitializeServer(conn, PORT, true);
 		MasterServer.RegisterHost(UNIQUE_GAME_NAME, gameName);
 	}
