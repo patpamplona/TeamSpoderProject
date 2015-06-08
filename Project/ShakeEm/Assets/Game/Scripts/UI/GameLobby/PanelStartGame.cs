@@ -10,9 +10,14 @@ public class PanelStartGame : BasePanelLobby {
 		PanelController.GetInstance().SetCurrentPanel(this);
 	}
 
-	public void OnStartGameClicked() {
-		Debug.Log ("Start Game Clicked!");
+	public void OnStartMultiplayerClicked() {
 
+		Debug.Log ("Start Game Clicked!");
 		PanelController.GetInstance().ShowPanel(PanelType.PANEL_INPUT_NAME);
+	}
+
+	public void OnStartSinglePlayerClicked() {
+
+		Debug.Log ("Start Single Player Clicked!");
 	}
 }
