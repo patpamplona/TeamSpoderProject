@@ -23,6 +23,8 @@ public class PlayerProfile {
 
 	public string playerName = "defaultPlayerName";
 	public string storeName = "defaultStoreName";
+	public int maxPlayerCount = 0;
+
 	public PlayerType playerType = PlayerType.None;
 
 	public bool isConnected = false;

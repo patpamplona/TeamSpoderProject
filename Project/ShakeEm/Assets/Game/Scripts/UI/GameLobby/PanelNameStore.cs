@@ -11,6 +11,7 @@ public class PanelNameStore : BasePanelLobby {
 	private GameObject panelConnecting = null;
 
 	private string storeName = "";
+	private string playerCount = "";
 
 	public override void Start () {
 		base.Start();
@@ -21,6 +22,7 @@ public class PanelNameStore : BasePanelLobby {
 		base.OnShow ();
 		
 		storeName = "";
+		playerCount = "";
 		buttonStart.interactable = false;
 		panelConnecting.SetActive (false);
 	}
@@ -44,9 +46,17 @@ public class PanelNameStore : BasePanelLobby {
 
 	#region UI Event Callbacks
 
-	public void OnTextFieldValueChange(string str) {
+	public void OnNameValueChange(string str) {
 
-		if (str.Length > 0)
+		if (str.Length > 0 && playerCount.Length > 0)
+			buttonStart.interactable = true;
+		else 
+			buttonStart.interactable = false;
+	}
+
+	public void OnPlayerCountValueChange(string str) {
+
+		if (str.Length > 0 && storeName.Length > 0)
 			buttonStart.interactable = true;
 		else 
 			buttonStart.interactable = false;
@@ -57,7 +67,18 @@ public class PanelNameStore : BasePanelLobby {
 		Debug.Log ("On End Edit: " + str);
 		storeName = str;
 		
-		if (storeName.Length > 0)
+		if (storeName.Length > 0 && playerCount.Length > 0)
+			buttonStart.interactable = true;
+		else 
+			buttonStart.interactable = false;
+	}
+
+	public void OnPlayerCountEndEdit(string str) {
+
+		Debug.Log ("On Player Count End Edit: " + str);
+		playerCount = str;
+
+		if (storeName.Length > 0 && playerCount.Length > 0)
 			buttonStart.interactable = true;
 		else 
 			buttonStart.interactable = false;
@@ -67,6 +88,10 @@ public class PanelNameStore : BasePanelLobby {
 		
 		Debug.Log ("On Start Clicked!");
 		PlayerProfile.GetInstance().storeName = this.storeName;
+
+		int parsedValue = 0;
+		int.TryParse (this.playerCount, out parsedValue);
+		PlayerProfile.GetInstance ().maxPlayerCount = parsedValue;
 
 		ShowConnectingPanel();
 		CreateServer();
@@ -79,8 +104,9 @@ public class PanelNameStore : BasePanelLobby {
 	private void CreateServer()
 	{
 		string gameName = PlayerProfile.GetInstance().storeName;
+		int maxRequest = PlayerProfile.GetInstance ().maxPlayerCount;
 
-		Network.InitializeServer(GameConstants.MAX_REQUEST, GameConstants.PORT, true);
+		Network.InitializeServer(maxRequest, GameConstants.PORT, true);
 		MasterServer.RegisterHost(GameConstants.UGID, gameName);
 	}
 
@@ -96,7 +122,7 @@ public class PanelNameStore : BasePanelLobby {
 		
 			// change to next screen
 			Debug.Log("Master Server Registration Successful!");
-			HideConnectingPanel();
+			// HideConnectingPanel();
 			ChangeToNextScreen();
 
 		} else if (masterServerEvent == MasterServerEvent.RegistrationFailedGameName
@@ -105,6 +131,7 @@ public class PanelNameStore : BasePanelLobby {
 
 			// failed, make connect button available
 			Debug.Log("Master Server Registration Failed!");
+			HideConnectingPanel();
 		}
 	}
 
