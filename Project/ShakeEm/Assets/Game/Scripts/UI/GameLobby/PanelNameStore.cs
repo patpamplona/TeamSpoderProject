@@ -29,7 +29,7 @@ public class PanelNameStore : BasePanelLobby {
 
 	private void ChangeToNextScreen() {
 
-		// change to next screen
+		PanelController.GetInstance ().ShowPanel (PanelType.PANEL_WAITING_ROOM);
 	}
 
 	private void ShowConnectingPanel() {
@@ -92,7 +92,7 @@ public class PanelNameStore : BasePanelLobby {
 		int parsedValue = 0;
 		int.TryParse (this.playerCount, out parsedValue);
 		PlayerProfile.GetInstance ().maxPlayerCount = parsedValue;
-
+		
 		ShowConnectingPanel();
 		CreateServer();
 	}

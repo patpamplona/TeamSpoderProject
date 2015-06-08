@@ -8,7 +8,8 @@ public enum PanelType {
 	PANEL_INPUT_NAME,
 	PANEL_HOST_OR_JOIN,
 	PANEL_NAME_STORE,
-	PANEL_AVAILABLE_STORE
+	PANEL_AVAILABLE_STORE,
+	PANEL_WAITING_ROOM
 }
 
 public class PanelController : MonoBehaviour {

@@ -32,7 +32,7 @@ public class PanelAvailableStores : BasePanelLobby {
 
 	public void ChangeToNextScreen() {
 
-		//Change to next screen;
+		PanelController.GetInstance ().ShowPanel (PanelType.PANEL_WAITING_ROOM);
 	}
 
 	private void PopulateAvailableHosts() {
@@ -159,6 +159,7 @@ public class PanelAvailableStores : BasePanelLobby {
 			return;
 
 		Debug.Log("Connecting to Host: " + host.gameName);
+		PlayerProfile.GetInstance ().storeName = host.gameName;
 		Network.Connect(host);
 	}
 	
