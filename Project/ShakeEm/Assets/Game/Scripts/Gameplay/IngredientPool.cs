@@ -62,4 +62,27 @@ public class IngredientPool : MonoBehaviour
 		activeIngredients.Remove(ing);
 		inactiveIngredients.Add(ing);
 	}
+
+	public void Clear()
+	{
+		if(activeIngredients != null)
+		{
+			foreach(Ingredient ing in activeIngredients)
+			{
+				Destroy(ing);
+			}
+
+			activeIngredients.Clear();
+		}
+
+		if(inactiveIngredients != null)
+		{
+			foreach(Ingredient ing in inactiveIngredients)
+			{
+				Destroy(ing);
+			}
+			
+			inactiveIngredients.Clear();
+		}
+	}
 }

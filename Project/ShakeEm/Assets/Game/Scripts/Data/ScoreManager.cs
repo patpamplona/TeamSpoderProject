@@ -20,6 +20,7 @@ public class ScoreManager : MonoBehaviour
 	void Awake()
 	{
 		_instance = this;
+		Reset();
 	}
 
 	void OnDestroy()
@@ -35,11 +36,15 @@ public class ScoreManager : MonoBehaviour
 
 	public void AddScore(int moreScore)
 	{
-		Debug.LogError("ADDING SCORE : " + moreScore);
-
 		score += moreScore;
 		score = Mathf.Clamp(score, 0, score);
 
 		scoreText.text = DisplayUtils.ConvertToThousands(score);
+	}
+
+	public void Reset()
+	{
+		score = 0;
+		scoreText.text = "0";
 	}
 }

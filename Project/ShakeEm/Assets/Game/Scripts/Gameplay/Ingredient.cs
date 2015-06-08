@@ -33,6 +33,6 @@ public class Ingredient : MonoBehaviour
 
 	public void OnIngredientTapped()
 	{
-		OrderManager.Instance.AddIngredient(ingredientId);
+		RPCHandler.Instance.CallRPCCheckIngredient(ingredientId);
 	}
 }

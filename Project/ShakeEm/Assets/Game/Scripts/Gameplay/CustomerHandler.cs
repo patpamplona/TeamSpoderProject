@@ -24,8 +24,8 @@ public class CustomerHandler : MonoBehaviour
 	}
 	#endregion
 
-	//TODO: Make a customer class with patience and range of recipe ids
 	[SerializeField] Customer[] customers;
+	[SerializeField] NetworkView customerNetwork;
 
 	private Customer currentCustomer;
 	public Customer CurrentCustomer
@@ -43,16 +43,30 @@ public class CustomerHandler : MonoBehaviour
 			throw new System.Exception("We don't have any customer");
 		}
 
+		if(NetworkManager.Instance.IsServer)
+		{
+			int index = Random.Range (0, customers.Length);
+			RPCHandler.Instance.CallRPCGenerateCustomer(index);
+		}
+	}
+
+    public void SetCustomer(int index)
+	{
 		foreach(Customer c in customers)
 		{
 			c.gameObject.SetActive(false);
 		}
-
-		int index = Random.Range (0, customers.Length);
-
+		
 		currentCustomer = customers[index];
-
 		currentCustomer.gameObject.SetActive(true);
 		currentCustomer.StartTimer();
+	}
+
+	public void Reset()
+	{
+		foreach(Customer customer in customers)
+		{
+			customer.MarkAsServed();
+		}
 	}
 }
