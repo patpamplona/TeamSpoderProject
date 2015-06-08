@@ -20,9 +20,14 @@ public class GameScene : BasicScene
 
 	private IEnumerator EnableConnections()
 	{
-		yield return new WaitForSeconds(1.0f);
+		IngredientHandler.Instance.SpreadActionIngredients();
+
+		yield return new WaitForSeconds(0.5f);
 
 		NetworkManager.Instance.EnableConnections();
+
+		yield return new WaitForSeconds(0.5f);
+
 		StartOrder();
 	}
 
