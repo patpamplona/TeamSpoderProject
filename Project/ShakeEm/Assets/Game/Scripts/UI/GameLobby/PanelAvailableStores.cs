@@ -63,6 +63,35 @@ public class PanelAvailableStores : BasePanelLobby {
 		}
 	}
 
+
+	private void PopulateAvailableHostsDebug() {
+
+		ClearHostItemsList();
+
+		int maxCount = 1;
+		for(int i = 0; i < maxCount; i++) {
+
+			string tmpGameName = "Temp Server #" + (i + 1);
+
+			Debug.Log("Host #" + (i + 1) + ": " + tmpGameName);
+			GameObject item = Instantiate(HostItemPrefab) as GameObject;
+			item.transform.SetParent(panelHostsList.transform);
+			item.transform.localPosition = Vector3.zero;
+			item.transform.localScale = Vector3.one;
+			
+			HostItem hostItem = item.GetComponent<HostItem>();
+			hostItem.SetHostName(tmpGameName);
+			hostItem.GetButton().onClick.AddListener(() => {
+				OnConnectToHostClick(null);
+			});
+			
+			hostItemList.Add(hostItem);
+		}
+
+		RectTransform panelRectTransform = panelHostsList.GetComponent<RectTransform>();
+		panelRectTransform.sizeDelta = new Vector2(800, (100 + 20) * maxCount);
+	}
+
 	private void ClearHostItemsList() {
 
 		while(hostItemList.Count > 0) {
@@ -116,6 +145,7 @@ public class PanelAvailableStores : BasePanelLobby {
 
 		ShowHostsList();
 		PopulateAvailableHosts();
+		//PopulateAvailableHostsDebug();
 	}
 
 	#endregion
@@ -124,6 +154,9 @@ public class PanelAvailableStores : BasePanelLobby {
 	#region Select and Connect to Server
 
 	public void OnConnectToHostClick(HostData host) {
+
+		if(host == null)
+			return;
 
 		Debug.Log("Connecting to Host: " + host.gameName);
 		Network.Connect(host);
