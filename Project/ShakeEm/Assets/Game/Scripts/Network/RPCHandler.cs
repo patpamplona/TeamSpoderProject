@@ -22,11 +22,24 @@ public class RPCHandler : MonoBehaviour
 		_instance = null;
 	}
 
+	public void CallAssignPlayerId(int index, NetworkPlayer target)
+	{
+		if(NetworkManager.Instance.IsConnected && Network.isServer)
+		{
+			networkView.RPC("AssignPlayerId", target, new object[] { index });
+		}
+	}
+
+	[RPC]
+	public void AssignPlayerId(int index)
+	{
+		NetworkManager.Instance.AssignNetworkId(index);
+	}
+
 	public void CallNetworkUpdateClientCount(int count)
 	{
 		if(NetworkManager.Instance.IsConnected && Network.isServer)
 		{
-			Debug.Log ("Count : " + count);
 			networkView.RPC("NetworkUpdateClientCount", RPCMode.Others, new object[]{ count });
 		}
 	}
@@ -73,6 +86,20 @@ public class RPCHandler : MonoBehaviour
 		OrderManager.Instance.SetRecipe(index);
 	}
 
+	public void CallRPCSpreadIngredients(string merged)
+	{
+		if(NetworkManager.Instance.IsConnected && Network.isServer)
+		{
+			networkView.RPC("RPCSpreadIngredients", RPCMode.All, new object[] { merged });
+		}
+	}
+
+	[RPC]
+	public void RPCSpreadIngredients(string merged)
+	{
+		IngredientHandler.Instance.ReceiveAssignedIngredient(merged);
+	}
+
 	public void CallRPCCheckIngredient(string id)
 	{
 		if(NetworkManager.Instance.IsConnected)
@@ -98,22 +125,22 @@ public class RPCHandler : MonoBehaviour
 		OrderManager.Instance.CheckIngredient(id);
 	}
 
-	public void CallRPCProgressRecipe(int seqIndex)
+	public void CallRPCProgressRecipe(int seqIndex, bool changeRecipe)
 	{
 		if(NetworkManager.Instance.IsConnected && Network.isServer)
 		{
-			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex });
+			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex, changeRecipe });
 		}
 		else if(!NetworkManager.Instance.IsConnected)
 		{
-			OrderManager.Instance.ProgressRecipe(seqIndex);
+			OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe);
 		}
 	}
 
 	[RPC]
-	public void RPCProgressRecipe(int seqIndex)
+	public void RPCProgressRecipe(int seqIndex, bool changeRecipe)
 	{
-		OrderManager.Instance.ProgressRecipe(seqIndex);
+		OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe);
 	}
 
 	public void CallRPCAddScore(int score)
