@@ -83,9 +83,15 @@ public class AdjustableGrid : MonoBehaviour
 	{
 		foreach(Image img in images)
 		{
-			Destroy (img);
+			Destroy (img.gameObject);
 		}
 
 		images.Clear();
+		images = null;
+
+		Vector2 _size = rect.sizeDelta;
+		_size.x = 0;
+
+		rect.sizeDelta = _size;
 	}
 }

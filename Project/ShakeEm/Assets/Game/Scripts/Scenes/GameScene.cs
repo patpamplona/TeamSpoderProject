@@ -39,6 +39,9 @@ public class GameScene : BasicScene
 
 	public override void DisableScene ()
 	{
+		NetworkManager.Instance.CloseServer();
+		NetworkManager.Instance.DisconnectToServer();
+
 		OrderManager.Instance.Reset();
 		//Reset the ingredients used by the handler before clearing the pool
 		IngredientHandler.Instance.Reset();
@@ -46,11 +49,8 @@ public class GameScene : BasicScene
 		IngredientPool.Instance.Clear();
 	}
 
-	void Update()
+	public void BackToMenu()
 	{
-		if(CustomerHandler.Instance.GameOver)
-		{
-
-		}
+		SceneManager.Instance.SwitchToScene(SceneKeys.TITLE_SCENE);
 	}
 }

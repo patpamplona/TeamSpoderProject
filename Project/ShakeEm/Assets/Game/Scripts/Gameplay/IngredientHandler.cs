@@ -238,6 +238,7 @@ public class IngredientHandler : MonoBehaviour
 			foreach(Ingredient ing in ingredientsInBoard)
 			{
 				IngredientPool.Instance.ReturnBorrowed(ing);
+				ing.gameObject.SetActive(false);
 			}
 
 			ingredientsInBoard = null;

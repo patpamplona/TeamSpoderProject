@@ -69,7 +69,7 @@ public class IngredientPool : MonoBehaviour
 		{
 			foreach(Ingredient ing in activeIngredients)
 			{
-				Destroy(ing);
+				Destroy(ing.gameObject);
 			}
 
 			activeIngredients.Clear();
@@ -79,7 +79,7 @@ public class IngredientPool : MonoBehaviour
 		{
 			foreach(Ingredient ing in inactiveIngredients)
 			{
-				Destroy(ing);
+				Destroy(ing.gameObject);
 			}
 			
 			inactiveIngredients.Clear();

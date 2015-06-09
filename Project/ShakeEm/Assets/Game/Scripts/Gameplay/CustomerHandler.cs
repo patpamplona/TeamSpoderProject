@@ -42,6 +42,8 @@ public class CustomerHandler : MonoBehaviour
 	[SerializeField] private GameObject[] heartImages;
 	[SerializeField] private int hearts = 3;
 
+	[SerializeField] private GameObject gameOverScreen;
+
 	private int customersServed = 0;
 	private float difficultyMultiplier = 1.0f;
 	public float DifficultyMultiplier
@@ -82,6 +84,7 @@ public class CustomerHandler : MonoBehaviour
 		{
 			hearts = 0;
 			gameOver = true;
+			gameOverScreen.SetActive(true);
 		}
 		else
 		{
@@ -116,8 +119,6 @@ public class CustomerHandler : MonoBehaviour
 			{
 				difficultyMultiplier = maxDifficultyMultiplier;
 			}
-
-			Debug.Log ("DIFFICULTY MULTIPLIER : " + difficultyMultiplier);
 		}
 	}
 
@@ -127,6 +128,15 @@ public class CustomerHandler : MonoBehaviour
 		customersServed = 0;
 		difficultyMultiplier = 1.0f;
 		hearts = 3;
+		gameOverScreen.SetActive(false);
+
+		if(heartImages != null)
+		{
+			foreach(GameObject img in heartImages)
+			{
+				img.SetActive(true);
+			}
+		}
 
 		foreach(Customer customer in customers)
 		{
