@@ -101,7 +101,5 @@ public class SceneKeyPair
 public enum SceneKeys
 {
 	TITLE_SCENE,
-	CREATE_SERVER_SCENE,
-	JOIN_SERVER_SCENE,
 	GAME_SCENE
 }

@@ -16,8 +16,9 @@ public class PanelStartGame : BasePanelLobby {
 		PanelController.GetInstance().ShowPanel(PanelType.PANEL_INPUT_NAME);
 	}
 
-	public void OnStartSinglePlayerClicked() {
-
+	public void OnStartSinglePlayerClicked() 
+	{
 		Debug.Log ("Start Single Player Clicked!");
+		SceneManager.Instance.SwitchToScene(SceneKeys.GAME_SCENE);
 	}
 }

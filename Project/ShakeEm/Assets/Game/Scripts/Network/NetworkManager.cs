@@ -22,6 +22,12 @@ public class NetworkManager : MonoBehaviour
 		_instance = null;
 	}
 
+	public delegate void OnMasterServerDelegate(MasterServerEvent masterServerEvent);
+	public event OnMasterServerDelegate masterServerEvt = null;
+
+	public delegate void OnConnectedToServerEvtDelegate();
+	public event OnConnectedToServerEvtDelegate OnConnectedToServerEvt = null;
+
 	private const string UNIQUE_GAME_NAME = "TEAMSPODERUID";
 
 	private const int PORT = 54321;
@@ -121,6 +127,11 @@ public class NetworkManager : MonoBehaviour
 		if(Network.isClient)
 		{
 			isConnected = true;
+
+			if(OnConnectedToServerEvt != null)
+			{
+				OnConnectedToServerEvt();
+			}
 		}
 		else
 		{
@@ -174,6 +185,14 @@ public class NetworkManager : MonoBehaviour
 			isConnected = true;
 			clientCount = Network.connections.Length;
 			RPCHandler.Instance.CallNetworkUpdateClientCount(clientCount);
+		}
+	}
+
+	void OnMasterServerEvent(MasterServerEvent masterServerEvent) 
+	{
+		if(masterServerEvt != null)
+		{
+			masterServerEvt(masterServerEvent);
 		}
 	}
 

@@ -25,31 +25,32 @@ public class PanelAvailableStores : BasePanelLobby {
 		ShowQueryingServer();
 	}
 
-	public override void OnShowComplete() {
-
+	public override void OnShowComplete() 
+	{
 		this.StartCoroutine(this.RefreshHostsList());
 	}
 
-	public void ChangeToNextScreen() {
-
+	public void ChangeToNextScreen() 
+	{
 		PanelController.GetInstance ().ShowPanel (PanelType.PANEL_WAITING_ROOM);
 	}
 
-	public void OnBackClicked() {
-		
+	public void OnBackClicked() 
+	{
 		Debug.Log ("On Back Clicked!");
 		PanelController.GetInstance ().ShowPanelBack (PanelType.PANEL_HOST_OR_JOIN);
 	}
 
-	private void PopulateAvailableHosts() {
-
+	private void PopulateAvailableHosts() 
+	{
 		ClearHostItemsList();
 
 		// Generate different buttons,
 		// Add listeners depending on index
 
 		int maxCount = hostsList.Length;
-		for(int i = 0; i < maxCount; i++) {
+		for(int i = 0; i < maxCount; i++) 
+		{
 
 			HostData hostData = hostsList[i];
 
@@ -70,13 +71,13 @@ public class PanelAvailableStores : BasePanelLobby {
 	}
 
 
-	private void PopulateAvailableHostsDebug() {
-
+	private void PopulateAvailableHostsDebug() 
+	{
 		ClearHostItemsList();
 
 		int maxCount = 1;
-		for(int i = 0; i < maxCount; i++) {
-
+		for(int i = 0; i < maxCount; i++) 
+		{
 			string tmpGameName = "Temp Server #" + (i + 1);
 
 			Debug.Log("Host #" + (i + 1) + ": " + tmpGameName);
@@ -134,17 +135,18 @@ public class PanelAvailableStores : BasePanelLobby {
 		float timeStart = Time.time;
 		float timeEnd = timeStart + GameConstants.REQUEST_REFRESH_LENGTH;
 
-		while (Time.time < timeEnd) {
-
-			hostsList = MasterServer.PollHostList();
+		while (Time.time < timeEnd) 
+		{
+			hostsList = NetworkManager.Instance.AvailableServers;
 			yield return new WaitForEndOfFrame();
 		}
 
-		if (hostsList != null && hostsList.Length > 0) {
-
+		if (hostsList != null && hostsList.Length > 0) 
+		{
 			Debug.Log ("Servers Available!");
-		} else {
-
+		}
+		else 
+		{
 			// No servers found.
 			Debug.Log ("No Servers Found!");
 		}
@@ -166,12 +168,15 @@ public class PanelAvailableStores : BasePanelLobby {
 
 		Debug.Log("Connecting to Host: " + host.gameName);
 		PlayerProfile.GetInstance ().storeName = host.gameName;
-		Network.Connect(host);
+
+		NetworkManager.Instance.OnConnectedToServerEvt += OnConnectedToServer;
+		NetworkManager.Instance.JoinServer(host);
 	}
 	
-	void OnConnectedToServer() {
-
+	public void OnConnectedToServer() 
+	{
 		Debug.Log ("Connected to Server!");
+		NetworkManager.Instance.OnConnectedToServerEvt -= OnConnectedToServer;
 		PlayerProfile.GetInstance().playerType = PlayerType.PlayerClient;
 		ChangeToNextScreen();
 	}
