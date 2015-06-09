@@ -34,12 +34,12 @@ public class CustomerHandler : MonoBehaviour
 	}
 
 	[SerializeField] Customer[] customers;
-	[SerializeField] NetworkView customerNetwork;
 
 	[SerializeField] private int   customersPerDifficulty  = 5;
 	[SerializeField] private float difficultyMultiplierInc = 0.5f;
 	[SerializeField] private float maxDifficultyMultiplier = 5.0f;
 
+	[SerializeField] private GameObject[] heartImages;
 	[SerializeField] private int hearts = 3;
 
 	private int customersServed = 0;
@@ -70,6 +70,11 @@ public class CustomerHandler : MonoBehaviour
 
 		if(!isServed)
 		{
+			if(heartImages != null && (hearts - 1) >= 0 && (hearts - 1) < heartImages.Length)
+			{
+				heartImages[(hearts - 1)].SetActive(false);
+			}
+
 			hearts--;
 		}
 
