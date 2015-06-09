@@ -72,12 +72,29 @@ public class CustomerHandler : MonoBehaviour
 
 		if(!isServed)
 		{
-			if(heartImages != null && (hearts - 1) >= 0 && (hearts - 1) < heartImages.Length)
-			{
-				heartImages[(hearts - 1)].SetActive(false);
-			}
-
 			hearts--;
+			if(NetworkManager.Instance.IsServer)
+			{
+				RPCHandler.Instance.CallRPCUpdateHearts(hearts);
+			}
+		}
+
+		if(hearts > 0);
+		{
+			if(NetworkManager.Instance.IsServer)
+			{
+				int index = Random.Range (0, customers.Length);
+				RPCHandler.Instance.CallRPCGenerateCustomer(index);
+			}
+		}
+	}
+
+	public void UpdateHearts(int heartsUpdated)
+	{
+		hearts = heartsUpdated;
+		for(int h = 0; h < heartImages.Length; h++)
+		{
+			heartImages[h].SetActive(hearts > h);
 		}
 
 		if(hearts <= 0)
@@ -85,14 +102,6 @@ public class CustomerHandler : MonoBehaviour
 			hearts = 0;
 			gameOver = true;
 			gameOverScreen.SetActive(true);
-		}
-		else
-		{
-			if(NetworkManager.Instance.IsServer)
-			{
-				int index = Random.Range (0, customers.Length);
-				RPCHandler.Instance.CallRPCGenerateCustomer(index);
-			}
 		}
 	}
 

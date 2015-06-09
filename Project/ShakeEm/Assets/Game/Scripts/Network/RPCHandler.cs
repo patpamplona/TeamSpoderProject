@@ -178,4 +178,22 @@ public class RPCHandler : MonoBehaviour
 	{
 		CustomerHandler.Instance.CurrentCustomer.MarkAsServed();
 	}
+
+	public void CallRPCUpdateHearts(int hearts)
+	{
+		if(NetworkManager.Instance.IsConnected && Network.isServer)
+		{
+			networkView.RPC("RPCUpdateHearts", RPCMode.All, new object[] { hearts });
+		}
+		else if(!NetworkManager.Instance.IsConnected)
+		{
+			CustomerHandler.Instance.UpdateHearts(hearts);
+		}
+	}
+
+	[RPC]
+	public void RPCUpdateHearts(int hearts)
+	{
+		CustomerHandler.Instance.UpdateHearts(hearts);
+	}
 }
