@@ -50,7 +50,7 @@ public class Customer : MonoBehaviour
 			
 			if(NetworkManager.Instance.IsServer)
 			{
-				RPCHandler.Instance.CallRPCAddScore(scoreDeduction);
+				//RPCHandler.Instance.CallRPCAddScore(scoreDeduction);
 				CustomerHandler.Instance.GenerateRandomCustomer(false);
 				OrderManager.Instance.GenerateOrder();
 			}
