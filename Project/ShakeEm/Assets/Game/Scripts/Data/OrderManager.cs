@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -30,6 +31,7 @@ public class OrderManager : MonoBehaviour
 	#region Instance Fields and Properties
 	//Only use this for inspector setup
 	[SerializeField] private Recipe[] recipeArray;
+	[SerializeField] private Image    product;
 
 	private int sequenceIndex = 0;
 
@@ -87,6 +89,8 @@ public class OrderManager : MonoBehaviour
 	public void SetRecipe(int index)
 	{
 		recipe = recipeArray[index];
+		product.gameObject.SetActive(true);
+		product.sprite = SpritePool.Instance.GetSprite(recipe.RecipeId);
 		UpdateOrder();
 	}
 
