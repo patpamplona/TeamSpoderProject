@@ -115,10 +115,26 @@ public class OrderManager : MonoBehaviour
 
 	public void CheckIngredient(string id)
 	{
+		bool isCorrect = false;
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
 		{
 			sequenceIndex++;
+			isCorrect = true;
+		}
+		else
+		{
+			sequenceIndex = 0;
+		}
 
+		bool changeRecipe = sequenceIndex >= CurrentRecipe.IngredientsNeeded;
+
+		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex, changeRecipe, isCorrect);
+	}
+
+	public void ProgressRecipe(int sequence, bool changeRecipe, bool isCorrect)
+	{
+		if(isCorrect)
+		{
 			if(!correctFeedback.activeInHierarchy)
 			{
 				correctFeedback.SetActive(true);
@@ -127,8 +143,6 @@ public class OrderManager : MonoBehaviour
 		}
 		else
 		{
-			sequenceIndex = 0;
-
 			if(!wrongFeedback.activeInHierarchy)
 			{
 				wrongFeedback.SetActive(true);
@@ -136,13 +150,6 @@ public class OrderManager : MonoBehaviour
 			}
 		}
 
-		bool changeRecipe = sequenceIndex >= CurrentRecipe.IngredientsNeeded;
-
-		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex, changeRecipe);
-	}
-
-	public void ProgressRecipe(int sequence, bool changeRecipe)
-	{
 		if(changeRecipe)
 		{
 			CustomerHandler.Instance.CustomerIsServed();

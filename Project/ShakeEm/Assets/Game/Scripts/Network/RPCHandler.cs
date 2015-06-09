@@ -125,22 +125,22 @@ public class RPCHandler : MonoBehaviour
 		OrderManager.Instance.CheckIngredient(id);
 	}
 
-	public void CallRPCProgressRecipe(int seqIndex, bool changeRecipe)
+	public void CallRPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect)
 	{
 		if(NetworkManager.Instance.IsConnected && Network.isServer)
 		{
-			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex, changeRecipe });
+			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex, changeRecipe, isCorrect });
 		}
 		else if(!NetworkManager.Instance.IsConnected)
 		{
-			OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe);
+			OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect);
 		}
 	}
 
 	[RPC]
-	public void RPCProgressRecipe(int seqIndex, bool changeRecipe)
+	public void RPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect)
 	{
-		OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe);
+		OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect);
 	}
 
 	public void CallRPCAddScore(int score)
