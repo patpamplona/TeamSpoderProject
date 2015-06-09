@@ -33,6 +33,9 @@ public class OrderManager : MonoBehaviour
 	[SerializeField] private Recipe[] recipeArray;
 	[SerializeField] private Image    product;
 
+	[SerializeField] private GameObject correctFeedback;
+	[SerializeField] private GameObject wrongFeedback;
+
 	private int sequenceIndex = 0;
 
 	private Recipe recipe = null;
@@ -115,10 +118,22 @@ public class OrderManager : MonoBehaviour
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
 		{
 			sequenceIndex++;
+
+			if(!correctFeedback.activeInHierarchy)
+			{
+				correctFeedback.SetActive(true);
+				StartCoroutine(ParticleDisabler(correctFeedback));
+			}
 		}
 		else
 		{
 			sequenceIndex = 0;
+
+			if(!wrongFeedback.activeInHierarchy)
+			{
+				wrongFeedback.SetActive(true);
+				StartCoroutine(ParticleDisabler(wrongFeedback));
+			}
 		}
 
 		bool changeRecipe = sequenceIndex >= CurrentRecipe.IngredientsNeeded;
@@ -135,6 +150,7 @@ public class OrderManager : MonoBehaviour
 			sequenceIndex = 0;
 			RPCHandler.Instance.CallRPCAddScore(CustomerHandler.Instance.CurrentCustomer.Score);
 			RPCHandler.Instance.CallRPCCustomerIsServed();
+
 			CustomerHandler.Instance.GenerateRandomCustomer(true);
 			GenerateOrder();
 		}
@@ -144,6 +160,13 @@ public class OrderManager : MonoBehaviour
 			IngredientHandler.Instance.GenerateIngredients();
 			recipeGrid.FocusOnChild(sequenceIndex);
 		}
+	}
+
+	private IEnumerator ParticleDisabler(GameObject go)
+	{
+		yield return new WaitForSeconds(0.65f);
+
+		go.SetActive(false);
 	}
 
 	public void Reset()
