@@ -33,7 +33,7 @@ public class GameScene : BasicScene
 
 	private void StartOrder()
 	{
-		CustomerHandler.Instance.GenerateRandomCustomer();
+		CustomerHandler.Instance.GenerateRandomCustomer(true);
 		OrderManager.Instance.GenerateOrder();
 	}
 
@@ -44,5 +44,13 @@ public class GameScene : BasicScene
 		IngredientHandler.Instance.Reset();
 		//Clear the ingredients pool
 		IngredientPool.Instance.Clear();
+	}
+
+	void Update()
+	{
+		if(CustomerHandler.Instance.GameOver)
+		{
+
+		}
 	}
 }

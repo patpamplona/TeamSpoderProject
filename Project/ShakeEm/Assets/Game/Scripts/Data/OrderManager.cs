@@ -30,7 +30,6 @@ public class OrderManager : MonoBehaviour
 	#region Instance Fields and Properties
 	//Only use this for inspector setup
 	[SerializeField] private Recipe[] recipeArray;
-	[SerializeField] private NetworkView orderNetwork;
 
 	private int sequenceIndex = 0;
 
@@ -71,6 +70,8 @@ public class OrderManager : MonoBehaviour
 	#region Order Manager methods
 	public void GenerateOrder()
 	{
+		if(CustomerHandler.Instance.GameOver) return;
+
 		if(recipeArray == null)
 		{
 			throw new System.Exception("We don't have any recipe");
@@ -125,10 +126,12 @@ public class OrderManager : MonoBehaviour
 	{
 		if(changeRecipe)
 		{
+			CustomerHandler.Instance.CustomerIsServed();
+
 			sequenceIndex = 0;
 			RPCHandler.Instance.CallRPCAddScore(CustomerHandler.Instance.CurrentCustomer.Score);
 			RPCHandler.Instance.CallRPCCustomerIsServed();
-			CustomerHandler.Instance.GenerateRandomCustomer();
+			CustomerHandler.Instance.GenerateRandomCustomer(true);
 			GenerateOrder();
 		}
 		else

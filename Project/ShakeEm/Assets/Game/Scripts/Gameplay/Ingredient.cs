@@ -33,6 +33,7 @@ public class Ingredient : MonoBehaviour
 
 	public void OnIngredientTapped()
 	{
+		if(CustomerHandler.Instance.GameOver) return;
 		RPCHandler.Instance.CallRPCCheckIngredient(ingredientId);
 	}
 }

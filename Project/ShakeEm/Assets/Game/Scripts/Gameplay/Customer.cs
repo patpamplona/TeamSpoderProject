@@ -35,9 +35,10 @@ public class Customer : MonoBehaviour
 
 	void Update()
 	{
+		if(CustomerHandler.Instance.GameOver) return;
 		if(!isWaiting) return;
 
-		timer += Time.deltaTime;
+		timer += (Time.deltaTime * CustomerHandler.Instance.DifficultyMultiplier);
 		
 		UpdateTimer();
 
@@ -50,7 +51,7 @@ public class Customer : MonoBehaviour
 			if(NetworkManager.Instance.IsServer)
 			{
 				RPCHandler.Instance.CallRPCAddScore(scoreDeduction);
-				CustomerHandler.Instance.GenerateRandomCustomer();
+				CustomerHandler.Instance.GenerateRandomCustomer(false);
 				OrderManager.Instance.GenerateOrder();
 			}
 		}

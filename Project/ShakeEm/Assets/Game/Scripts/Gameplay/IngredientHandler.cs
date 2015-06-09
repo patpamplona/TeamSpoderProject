@@ -77,6 +77,8 @@ public class IngredientHandler : MonoBehaviour
 
 	public void GenerateIngredients()
 	{
+		if(CustomerHandler.Instance.GameOver) return;
+
 		if(NetworkManager.Instance.IsConnected)
 		{
 			SpreadIngredientsToPlayers();
