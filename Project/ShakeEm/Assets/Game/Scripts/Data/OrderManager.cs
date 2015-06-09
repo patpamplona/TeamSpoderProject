@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Holoville.HOTween;
 
 public class OrderManager : MonoBehaviour 
 {
@@ -35,6 +36,8 @@ public class OrderManager : MonoBehaviour
 
 	[SerializeField] private GameObject correctFeedback;
 	[SerializeField] private GameObject wrongFeedback;
+
+	[SerializeField] private Text incorrectPlayer;
 
 	private int sequenceIndex = 0;
 
@@ -113,7 +116,7 @@ public class OrderManager : MonoBehaviour
 		IngredientHandler.Instance.GenerateIngredients();
 	}
 
-	public void CheckIngredient(string id)
+	public void CheckIngredient(string id, string sender)
 	{
 		bool isCorrect = false;
 		if(CurrentRecipe.GetIngredient(sequenceIndex) == id)
@@ -128,10 +131,10 @@ public class OrderManager : MonoBehaviour
 
 		bool changeRecipe = sequenceIndex >= CurrentRecipe.IngredientsNeeded;
 
-		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex, changeRecipe, isCorrect);
+		RPCHandler.Instance.CallRPCProgressRecipe(sequenceIndex, changeRecipe, isCorrect, sender);
 	}
 
-	public void ProgressRecipe(int sequence, bool changeRecipe, bool isCorrect)
+	public void ProgressRecipe(int sequence, bool changeRecipe, bool isCorrect, string sender)
 	{
 		if(isCorrect)
 		{
@@ -147,6 +150,26 @@ public class OrderManager : MonoBehaviour
 			{
 				wrongFeedback.SetActive(true);
 				StartCoroutine(ParticleDisabler(wrongFeedback));
+			}
+
+			if(NetworkManager.Instance.IsConnected)
+			{
+				incorrectPlayer.text = sender + "'S\nFAULT!";
+				Color c = incorrectPlayer.color;
+				
+				TweenParms parms = new TweenParms();
+				c.a = 1.0f;
+				parms.Prop("color", c);
+				
+				c.a = 0.0f;
+				incorrectPlayer.color = c;
+				
+				TweenParms fadeOut = new TweenParms();
+				fadeOut.Prop("color", c);
+				fadeOut.Delay(2.0f);
+				
+				HOTween.To(incorrectPlayer, 0.5f, parms);
+				HOTween.To(incorrectPlayer, 0.5f, fadeOut);
 			}
 		}
 
@@ -178,6 +201,10 @@ public class OrderManager : MonoBehaviour
 
 	public void Reset()
 	{
+		Color c = incorrectPlayer.color;
+		c.a = 0.0f;
+		incorrectPlayer.color = c;
+
 		recipe = null;
 		recipeGrid.Clear();
 	}

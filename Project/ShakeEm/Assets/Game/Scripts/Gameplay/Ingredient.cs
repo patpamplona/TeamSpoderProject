@@ -34,6 +34,6 @@ public class Ingredient : MonoBehaviour
 	public void OnIngredientTapped()
 	{
 		if(CustomerHandler.Instance.GameOver) return;
-		RPCHandler.Instance.CallRPCCheckIngredient(ingredientId);
+		RPCHandler.Instance.CallRPCCheckIngredient(ingredientId, PlayerProfile.GetInstance().playerName);
 	}
 }

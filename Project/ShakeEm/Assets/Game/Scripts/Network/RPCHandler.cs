@@ -100,47 +100,47 @@ public class RPCHandler : MonoBehaviour
 		IngredientHandler.Instance.ReceiveAssignedIngredient(merged);
 	}
 
-	public void CallRPCCheckIngredient(string id)
+	public void CallRPCCheckIngredient(string id, string sender)
 	{
 		if(NetworkManager.Instance.IsConnected)
 		{
 			if(Network.isServer)
 			{
-				OrderManager.Instance.CheckIngredient(id);
+				OrderManager.Instance.CheckIngredient(id, sender);
 			}
 			else
 			{
-				networkView.RPC("RPCCheckIngredient", RPCMode.Server, new object[] { id });
+				networkView.RPC("RPCCheckIngredient", RPCMode.Server, new object[] { id, sender });
 			}
 		}
 		else if(!NetworkManager.Instance.IsConnected)
 		{
-			OrderManager.Instance.CheckIngredient(id);
+			OrderManager.Instance.CheckIngredient(id, sender);
 		}
 	}
 
 	[RPC]
-	public void RPCCheckIngredient(string id)
+	public void RPCCheckIngredient(string id, string sender)
 	{
-		OrderManager.Instance.CheckIngredient(id);
+		OrderManager.Instance.CheckIngredient(id, sender);
 	}
 
-	public void CallRPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect)
+	public void CallRPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect, string sender)
 	{
 		if(NetworkManager.Instance.IsConnected && Network.isServer)
 		{
-			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex, changeRecipe, isCorrect });
+			networkView.RPC("RPCProgressRecipe", RPCMode.All, new object[] { seqIndex, changeRecipe, isCorrect, sender });
 		}
 		else if(!NetworkManager.Instance.IsConnected)
 		{
-			OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect);
+			OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect, sender);
 		}
 	}
 
 	[RPC]
-	public void RPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect)
+	public void RPCProgressRecipe(int seqIndex, bool changeRecipe, bool isCorrect, string sender)
 	{
-		OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect);
+		OrderManager.Instance.ProgressRecipe(seqIndex, changeRecipe, isCorrect, sender);
 	}
 
 	public void CallRPCAddScore(int score)
